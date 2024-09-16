@@ -12,7 +12,7 @@ bevy new projectname
 Using [`cargo generate`](https://cargo-generate.github.io/cargo-generate/):
 ```shell
 cargo install cargo-generate
-cargo generate projectname --git https://github.com/thebevyflock/bevy_new
+cargo generate thebevyflock/bevy_new
 ```
 
 ## License
