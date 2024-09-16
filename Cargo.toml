@@ -34,7 +34,3 @@ codegen-units = 1
 # Do a second optimization pass over the entire program, including dependencies.
 # Slows compile times, marginal improvements.
 lto = "thin"
-# Optimize with performance in mind.
-opt-level = 3
-# Keep debug information in the binary.
-strip = "none"
