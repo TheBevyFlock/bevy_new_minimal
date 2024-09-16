@@ -1,5 +1,5 @@
 [template]
-cargo_generate_version = "0.21.3"
+cargo_generate_version = "0.22"
 ignore = [
     "LICENSE-Apache-2.0.txt",
     "LICENSE-CC0-1.0.txt",
