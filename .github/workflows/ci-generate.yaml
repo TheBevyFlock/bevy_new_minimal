@@ -57,4 +57,4 @@ jobs:
       - name: Remove check files
         run: |
           find . -type f -name "*.check" -delete
-          rm -rf "$REPO"
+          # rm -rf "$REPO"
