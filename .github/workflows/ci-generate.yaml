@@ -16,6 +16,11 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Cache
+        uses: Leafwing-Studios/cargo-cache@v2
+        with:
+          sweep-cache: true
+
       - name: Install cargo-generate
         run: |
           cargo install cargo-generate
@@ -40,7 +45,7 @@ jobs:
 
       - name: Check for drift between templates and generated files
         run: |
-          for check_file in $(find ./foo -type f -name "*.check"); do
+          for check_file in $(find "$REPO" -type f -name "*.check"); do
             generated_file="${check_file%.check}"
             if ! diff "$check_file" "$generated_file" > /dev/null; then
               echo "File $generated_file has drift from $generated_file.template:"
@@ -48,6 +53,8 @@ jobs:
               echo "::error file=$generated_file::Template drift detected."
             fi
           done
+        env:
+          REPO: ${{ github.event.repository.name }}
 
       - name: Remove check files
         run: |
