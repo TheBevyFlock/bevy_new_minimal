@@ -16,9 +16,9 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Install Bevy CLI
+      - name: Install cargo-generate
         run: |
-          cargo install --git https://github.com/thebevyflock/bevy_cli bevy_cli
+          cargo install cargo-generate
 
       - name: Retain a copy of every generated file
         run: |
@@ -32,16 +32,13 @@ jobs:
 
       - name: Generate from templates
         run: |
-          # Note: this would be slightly improved by having the ability to generate from local
-          # templates, as cargo-generate can.
-          bevy new foo -t "$REPO" -b "$BRANCH"
-        env:
-          REPO: ${{ github.repository }}
-          BRANCH: ${{ github.ref_name }}
+          # Note: we use cargo-generate itself here as our wrapping of the cargo-generate library
+          # does not allow us to do useful things like --allow-commands and use local templates.
+          cargo generate --path . --name foo --allow-commands
 
       - name: Check for drift between templates and generated files
         run: |
-          for check_file in $(find . -type f -name "*.check"); do
+          for check_file in $(find ./foo -type f -name "*.check"); do
             generated_file="${check_file%.check}"
             if ! diff "$check_file" "$generated_file" > /dev/null; then
               echo "File $generated_file has drift from $generated_file.template:"
@@ -53,3 +50,4 @@ jobs:
       - name: Remove check files
         run: |
           find . -type f -name "*.check" -delete
+          rm -rf foo
