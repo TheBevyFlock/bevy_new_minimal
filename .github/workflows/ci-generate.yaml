@@ -20,8 +20,6 @@ jobs:
 
       - name: Cache
         uses: Leafwing-Studios/cargo-cache@v2
-        with:
-          sweep-cache: true
 
       - name: Install cargo-generate
         run: |
@@ -57,4 +55,5 @@ jobs:
       - name: Remove check files
         run: |
           find . -type f -name "*.check" -delete
+          ls -la "$REPO"
           # rm -rf "$REPO"
