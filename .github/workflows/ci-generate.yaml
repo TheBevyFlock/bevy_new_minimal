@@ -50,6 +50,7 @@ jobs:
             if ! diff "$check_file" "$generated_file" ; then
               echo "File $generated_file has drift from $generated_file.template:"
               echo "::error file=$generated_file::Template drift detected."
+              exit 1
             fi
           done
 
