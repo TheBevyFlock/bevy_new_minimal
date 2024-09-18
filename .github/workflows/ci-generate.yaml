@@ -8,6 +8,8 @@ on: push
 jobs:
   drift-check:
     runs-on: ubuntu-latest
+    env:
+      REPO: ${{ github.event.repository.name }}
 
     steps:
       - name: Checkout repository
@@ -40,8 +42,6 @@ jobs:
           # Note: we use cargo-generate itself here as our wrapping of the cargo-generate library
           # does not allow us to do useful things like --allow-commands and use local templates.
           cargo generate --path . --name "$REPO" --allow-commands
-        env:
-          REPO: ${{ github.event.repository.name }}
 
       - name: Check for drift between templates and generated files
         run: |
@@ -53,10 +53,8 @@ jobs:
               echo "::error file=$generated_file::Template drift detected."
             fi
           done
-        env:
-          REPO: ${{ github.event.repository.name }}
 
       - name: Remove check files
         run: |
           find . -type f -name "*.check" -delete
-          rm -rf foo
+          rm -rf "$REPO"
