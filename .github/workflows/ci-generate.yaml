@@ -20,6 +20,8 @@ jobs:
 
       - name: Cache
         uses: Leafwing-Studios/cargo-cache@v2
+        with:
+          sweep-cache: false
 
       - name: Install cargo-generate
         run: |
