@@ -47,9 +47,8 @@ jobs:
         run: |
           for check_file in $(find "$REPO" -type f -name "*.check"); do
             generated_file="${check_file%.check}"
-            if ! diff "$check_file" "$generated_file" > /dev/null; then
+            if ! diff "$check_file" "$generated_file" ; then
               echo "File $generated_file has drift from $generated_file.template:"
-              diff "$check_file" "$generated_file"
               echo "::error file=$generated_file::Template drift detected."
             fi
           done
