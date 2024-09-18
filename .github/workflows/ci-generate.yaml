@@ -1,0 +1,55 @@
+name: CI
+
+on: push
+  # pull_request:
+  #   branches:
+  #     - main
+
+jobs:
+  drift-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Bevy CLI
+        run: |
+          cargo install --git https://github.com/thebevyflock/bevy_cli
+
+      - name: Retain a copy of every generated file
+        run: |
+          for template_file in $(find . -type f -name "*.template"); do
+            generated_file="${template_file%.template}"
+            if [ -f "$generated_file" ]; then
+              # Keep a copy to diff with the output of the next step
+              cp "$generated_file" "${generated_file}.check"
+            fi
+          done
+
+      - name: Generate from templates
+        run: |
+          # Note: this would be slightly improved by having the ability to generate from local
+          # templates, as cargo-generate can.
+          bevy new foo -t "$REPO" -b "$BRANCH"
+        env:
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
+
+      - name: Check for drift between templates and generated files
+        run: |
+          for check_file in $(find . -type f -name "*.check"); do
+            generated_file="${check_file%.check}"
+            if ! diff "$check_file" "$generated_file" > /dev/null; then
+              echo "File $generated_file has drift from $generated_file.template:"
+              diff "$check_file" "$generated_file" || true
+              echo "::error file=$generated_file::Template drift detected."
+            fi
+          done
+
+      - name: Remove check files
+        run: |
+          find . -type f -name "*.check" -delete
