@@ -1,6 +1,6 @@
 [package]
-name = "bevy_new"
-version = "0.1.0"
+name = "bevy_new_minimal"
+version = "0.1.1"
 edition = "2021"
 
 [dependencies]
