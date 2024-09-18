@@ -34,7 +34,9 @@ jobs:
         run: |
           # Note: we use cargo-generate itself here as our wrapping of the cargo-generate library
           # does not allow us to do useful things like --allow-commands and use local templates.
-          cargo generate --path . --name foo --allow-commands
+          cargo generate --path . --name "$REPO" bevy_new --allow-commands
+        env:
+          REPO: ${{ github.event.repository.name }}
 
       - name: Check for drift between templates and generated files
         run: |
@@ -42,7 +44,7 @@ jobs:
             generated_file="${check_file%.check}"
             if ! diff "$check_file" "$generated_file" > /dev/null; then
               echo "File $generated_file has drift from $generated_file.template:"
-              diff "$check_file" "$generated_file" || true
+              diff "$check_file" "$generated_file"
               echo "::error file=$generated_file::Template drift detected."
             fi
           done
