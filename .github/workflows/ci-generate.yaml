@@ -18,14 +18,10 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Cache
-        uses: Leafwing-Studios/cargo-cache@v2
-        with:
-          sweep-cache: false
-
       - name: Install cargo-generate
-        run: |
-          cargo install cargo-generate
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-generate
 
       - name: Retain a copy of every generated file
         run: |
