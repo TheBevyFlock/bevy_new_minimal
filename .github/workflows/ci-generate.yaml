@@ -50,6 +50,7 @@ jobs:
             if ! diff "${check_file}" "${generated_file}"; then
               echo "File ${generated_file} has changed from ${generated_file}.template:"
               echo "::error file=${generated_file}::Template change detected."
+              change_detected=true
             fi
           done
 
