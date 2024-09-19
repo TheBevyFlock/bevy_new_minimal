@@ -39,13 +39,13 @@ jobs:
           # Note: we use cargo-generate itself here as bevy_cli's wrapping of the cargo-generate
           # library does not allow us to do useful things like --allow-commands and use local
           # templates.
-          cargo generate --path . --name "${REPO}" --allow-commands
+          cargo generate --path . --name '${{ env.REPO }}' --allow-commands
 
       - name: Diff generated files
         run: |
           change_detected=false
 
-          for check_file in $(find "${REPO}" -type f -name '*.check'); do
+          for check_file in $(find '${{ env.REPO }}' -type f -name '*.check'); do
             generated_file="${check_file%.check}"
             if ! diff "${check_file}" "${generated_file}" > /dev/null ; then
               echo "File ${generated_file} has changed from ${generated_file}.template:"
