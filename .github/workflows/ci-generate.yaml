@@ -37,7 +37,7 @@ jobs:
         run: |
           # Note: we use cargo-generate itself here as our wrapping of the cargo-generate library
           # does not allow us to do useful things like --allow-commands and use local templates.
-          cargo generate --path . --name "$REPO" --allow-commands
+          cargo generate --path . --name '${{ env.REPO }}' --allow-commands
 
       - name: Check for drift between templates and generated files
         run: |
