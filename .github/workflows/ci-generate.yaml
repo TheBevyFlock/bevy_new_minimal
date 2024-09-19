@@ -41,11 +41,11 @@ jobs:
 
       - name: Check for drift between templates and generated files
         run: |
-          for check_file in $(find "$REPO" -type f -name "*.check"); do
+          for check_file in $(find '${{ env.REPO }}' -type f -name '*.check'); do
             generated_file="${check_file%.check}"
-            if ! diff "$check_file" "$generated_file" ; then
-              echo "File $generated_file has drift from $generated_file.template:"
-              echo "::error file=$generated_file::Template drift detected."
+            if ! diff "${check_file}" "${generated_file}"; then
+              echo "File ${generated_file} has drift from ${generated_file}.template:"
+              echo "::error file=${generated_file}::Template drift detected."
               exit 1
             fi
           done
