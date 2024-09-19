@@ -47,8 +47,9 @@ jobs:
 
           for check_file in $(find "${REPO}" -type f -name '*.check'); do
             generated_file="${check_file%.check}"
-            if ! diff "${check_file}" "${generated_file}"; then
+            if ! diff "${check_file}" "${generated_file}" > /dev/null ; then
               echo "File ${generated_file} has changed from ${generated_file}.template:"
+              diff "${check_file}" "${generated_file}"
               echo "::error file=${generated_file}::Template change detected."
               change_detected=true
             fi
