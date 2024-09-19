@@ -39,7 +39,7 @@ jobs:
           # Note: we use cargo-generate itself here as bevy_cli's wrapping of the cargo-generate
           # library does not allow us to do useful things like --allow-commands and use local
           # templates.
-          cargo generate --path . --name '${{ env.REPO }}' --allow-commands
+          cargo generate --path . --name "$REPO" --allow-commands
 
       - name: Diff generated files
         run: |
