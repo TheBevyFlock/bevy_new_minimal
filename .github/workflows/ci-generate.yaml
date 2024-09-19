@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  pull_request:
+     branches:
+       - main
+
+jobs:
+  # Compare committed files with those generated from templates to ensure no differences occur.
+  check-generated-files:
+    runs-on: ubuntu-latest
+    env:
+      REPO: ${{ github.event.repository.name }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install cargo-generate
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-generate
+
+      - name: Retain pre-generated files
+        run: |
+          for template_file in $(find . -type f -name '*.template'); do
+            generated_file="${template_file%.template}"
+            if [[ -f "${generated_file}" ]]; then
+              # Keep a copy to diff with the output of the next step.
+              cp "${generated_file}" "${generated_file}.check"
+            fi
+          done
+
+      - name: Generate repository
+        run: |
+          # Note: we use cargo-generate itself here as bevy_cli's wrapping of the cargo-generate
+          # library does not allow us to do useful things like --allow-commands and use local
+          # templates.
+          cargo generate --path . --name '${{ env.REPO }}' --allow-commands
+
+      - name: Diff generated files
+        run: |
+          change_detected=false
+
+          for check_file in $(find '${{ env.REPO }}' -type f -name '*.check'); do
+            generated_file="${check_file%.check}"
+            if ! diff "${check_file}" "${generated_file}" > /dev/null ; then
+              echo "File ${generated_file} has changed from ${generated_file}.template:"
+              diff "${check_file}" "${generated_file}" || true
+              echo "::error file=${generated_file}::Template change detected."
+              change_detected=true
+            fi
+          done
+
+          if [[ "${change_detected}" == true ]]; then
+            exit 1
+          fi
