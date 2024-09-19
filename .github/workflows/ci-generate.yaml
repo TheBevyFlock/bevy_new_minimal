@@ -25,11 +25,11 @@ jobs:
 
       - name: Retain a copy of every generated file
         run: |
-          for template_file in $(find . -type f -name "*.template"); do
+          for template_file in $(find . -type f -name '*.template'); do
             generated_file="${template_file%.template}"
-            if [ -f "$generated_file" ]; then
-              # Keep a copy to diff with the output of the next step
-              cp "$generated_file" "${generated_file}.check"
+            if [[ -f "{$generated_file}" ]]; then
+              # Keep a copy to diff with the output of the next step.
+              cp "${generated_file}" "${generated_file}.check"
             fi
           done
 
