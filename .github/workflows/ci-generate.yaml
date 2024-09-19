@@ -45,7 +45,7 @@ jobs:
         run: |
           change_detected=false
 
-          for check_file in $(find "{$REPO}" -type f -name '*.check'); do
+          for check_file in $(find "$REPO" -type f -name '*.check'); do
             generated_file="${check_file%.check}"
             if ! diff "${check_file}" "${generated_file}"; then
               echo "File ${generated_file} has changed from ${generated_file}.template:"
