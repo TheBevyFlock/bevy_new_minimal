@@ -1,6 +1,0 @@
-use bevy::prelude::*;
-
-fn main() {
-    // {{ crate_name }}
-    App::new().add_plugins(DefaultPlugins).run();
-}
