@@ -6,7 +6,8 @@ on:
        - main
 
 jobs:
-  check-drift:
+  # Compare committed files with those generated from templates to ensure no differences occur.
+  check-generated-files:
     runs-on: ubuntu-latest
     env:
       REPO: ${{ github.event.repository.name }}
@@ -23,7 +24,7 @@ jobs:
         with:
           tool: cargo-generate
 
-      - name: Retain a copy of every generated file
+      - name: Retain pre-generated files
         run: |
           for template_file in $(find . -type f -name '*.template'); do
             generated_file="${template_file%.template}"
@@ -33,19 +34,25 @@ jobs:
             fi
           done
 
-      - name: Generate from templates
+      - name: Generate repository
         run: |
-          # Note: we use cargo-generate itself here as our wrapping of the cargo-generate library
-          # does not allow us to do useful things like --allow-commands and use local templates.
+          # Note: we use cargo-generate itself here as bevy_cli's wrapping of the cargo-generate
+          # library does not allow us to do useful things like --allow-commands and use local
+          # templates.
           cargo generate --path . --name '${{ env.REPO }}' --allow-commands
 
-      - name: Check for drift between templates and generated files
+      - name: Diff generated files
         run: |
+          change_detected=false
+
           for check_file in $(find '${{ env.REPO }}' -type f -name '*.check'); do
             generated_file="${check_file%.check}"
             if ! diff "${check_file}" "${generated_file}"; then
-              echo "File ${generated_file} has drift from ${generated_file}.template:"
-              echo "::error file=${generated_file}::Template drift detected."
-              exit 1
+              echo "File ${generated_file} has changed from ${generated_file}.template:"
+              echo "::error file=${generated_file}::Template change detected."
             fi
           done
+
+          if [[ "{$change_detected}" = true ]]; then
+            exit 1
+          fi
