@@ -53,6 +53,6 @@ jobs:
             fi
           done
 
-          if [[ "{$change_detected}" = true ]]; then
+          if [[ "{$change_detected}" == true ]]; then
             exit 1
           fi
