@@ -6,7 +6,7 @@ on:
        - main
 
 jobs:
-  drift-check:
+  check-drift:
     runs-on: ubuntu-latest
     env:
       REPO: ${{ github.event.repository.name }}
