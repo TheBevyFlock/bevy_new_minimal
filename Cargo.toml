@@ -5,8 +5,7 @@ edition = "2021"
 
 [dependencies]
 bevy = "0.15"
-# Set max static log levels to `debug` by default, and `warn` for release builds. This helps avoid
-# unwanted low-severity log spam, which can affect performance.
+# Set max log levels. This helps avoid unwanted low-severity log spam, which can affect performance.
 log = { version = "0.4", features = [
     "max_level_debug",
     "release_max_level_warn",
