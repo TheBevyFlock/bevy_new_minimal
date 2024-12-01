@@ -1,10 +1,20 @@
 [package]
 name = "bevy_new_minimal"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 
 [dependencies]
-bevy = "0.14"
+bevy = "0.15"
+# Set max static log levels to `debug` by default, and `warn` for release builds. This helps avoid
+# unwanted low-severity log spam, which can affect performance.
+log = { version = "0.4", features = [
+    "max_level_debug",
+    "release_max_level_warn",
+] }
+tracing = { version = "0.1", features = [
+    "max_level_debug",
+    "release_max_level_warn",
+] }
 
 # Idiomatic Bevy code often triggers these lints, and the CI workflow treats them as errors.
 # In some cases they may still signal poor code quality however, so consider commenting out these lines.
