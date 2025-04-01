@@ -2,8 +2,8 @@ name: CI
 
 on:
   pull_request:
-     branches:
-       - main
+    branches:
+      - main
 
 jobs:
   # Compare committed files with those generated from templates to ensure no differences occur.
